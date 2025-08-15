@@ -11,14 +11,15 @@ load_dotenv(BASE_DIR / ".env")
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-change-me")
 
-DEBUG = os.getenv("DEBUG", "False") == "True"
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-# ✅ Added your Render domain
+# ✅ Allow both local and Render domain
 ALLOWED_HOSTS = os.getenv(
     "ALLOWED_HOSTS",
     "127.0.0.1,localhost,ecommerce-ebe1.onrender.com"
 ).split(",")
 
+# ✅ Prevent CSRF issues on Render
 CSRF_TRUSTED_ORIGINS = os.getenv(
     "CSRF_TRUSTED_ORIGINS",
     "http://127.0.0.1:8000,http://localhost:8000,https://ecommerce-ebe1.onrender.com"
@@ -32,14 +33,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Third-party apps
     'rest_framework',
     'corsheaders',
+
+    # Local apps
     'products',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ added for static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ Serve static files
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -68,7 +73,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'myshop.wsgi.application'
 
-# Database: use Supabase if DATABASE_URL is set, otherwise fallback to sqlite
+# ✅ Database: use DATABASE_URL if set, otherwise fallback to Supabase credentials
 DATABASE_URL = os.getenv("DATABASE_URL")
 if DATABASE_URL:
     DATABASES = {
@@ -89,7 +94,7 @@ else:
         }
     }
 
-# Static files
+# ✅ Static files for Render
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -110,8 +115,12 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ✅ Allow CORS from localhost and Render
+# ✅ CORS settings
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'https://ecommerce-ebe1.onrender.com'
 ]
+
+# Optional: Allow all origins in dev
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
