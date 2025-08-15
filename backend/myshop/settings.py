@@ -13,10 +13,15 @@ SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-change-me")
 
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+# ✅ Added your Render domain
+ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS",
+    "127.0.0.1,localhost,ecommerce-ebe1.onrender.com"
+).split(",")
+
 CSRF_TRUSTED_ORIGINS = os.getenv(
     "CSRF_TRUSTED_ORIGINS",
-    "http://127.0.0.1:8000,http://localhost:8000"
+    "http://127.0.0.1:8000,http://localhost:8000,https://ecommerce-ebe1.onrender.com"
 ).split(",")
 
 # Application definition
@@ -71,20 +76,19 @@ if DATABASE_URL:
     }
 else:
     DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',  # database name in your URI
-        'USER': 'postgres.wpiuntxnldmzngefyjji',  # your Supabase username
-        'PASSWORD': 'Akinloye1859',  # your password
-        'HOST': 'aws-1-eu-north-1.pooler.supabase.com',  # Supabase host
-        'PORT': '6543',  # port from your URI
-        'OPTIONS': {
-            'sslmode': 'require',  # required for Supabase
-        },
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'postgres',
+            'USER': 'postgres.wpiuntxnldmzngefyjji',
+            'PASSWORD': 'Akinloye1859',
+            'HOST': 'aws-1-eu-north-1.pooler.supabase.com',
+            'PORT': '6543',
+            'OPTIONS': {
+                'sslmode': 'require',
+            },
+        }
     }
-}
 
-    
 # Static files
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -106,7 +110,8 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS
+# ✅ Allow CORS from localhost and Render
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
+    'https://ecommerce-ebe1.onrender.com'
 ]
